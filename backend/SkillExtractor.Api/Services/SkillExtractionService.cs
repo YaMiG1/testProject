@@ -10,7 +10,7 @@ using SkillExtractor.Api.Models;
 
 namespace SkillExtractor.Api.Services
 {
-    public class SkillExtractionService
+    public class SkillExtractionService : ISkillExtractionService
     {
         private readonly AppDbContext _db;
 
