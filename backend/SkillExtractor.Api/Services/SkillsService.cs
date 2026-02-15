@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SkillExtractor.Api.Data;
 using SkillExtractor.Api.DTOs;
@@ -41,7 +36,7 @@ namespace SkillExtractor.Api.Services
 
             var nameLower = name.ToLowerInvariant();
             var exists = await _db.Skills.AnyAsync(s => s.Name.ToLower() == nameLower, ct);
-            
+
             if (exists)
                 return (false, null, "duplicate");
 
@@ -74,7 +69,7 @@ namespace SkillExtractor.Api.Services
 
             var nameLower = name.ToLowerInvariant();
             var duplicate = await _db.Skills.AnyAsync(s => s.Id != id && s.Name.ToLower() == nameLower, ct);
-            
+
             if (duplicate)
                 return (false, null, "duplicate", false);
 
