@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/SkillExtractor.Api/SkillExtractor.Api.csproj" />
+  </Folder>
+</Solution>
