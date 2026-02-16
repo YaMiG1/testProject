@@ -1,0 +1,52 @@
+/* Home Page Styles */
+.home-page {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.home-page h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.home-page p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.home-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 12px 30px;
+  font-size: 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.action-btn.primary {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background-color: #45a049;
+}
+
+.action-btn.secondary {
+  background-color: #2196F3;
+  color: white;
+}
+
+.action-btn.secondary:hover {
+  background-color: #0b7dda;
+}

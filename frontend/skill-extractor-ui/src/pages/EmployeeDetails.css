@@ -1,0 +1,107 @@
+/* EmployeeDetails Page Styles */
+.employee-details {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.back-link {
+  color: #2196F3;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
+}
+
+.back-link:hover {
+  background-color: #e3f2fd;
+}
+
+.details-card {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.details-card h1 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.details-card p {
+  margin: 8px 0;
+  color: #666;
+}
+
+.details-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.details-section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.skills-list {
+  list-style-position: inside;
+  padding: 10px 0;
+}
+
+.skills-list li {
+  padding: 8px 0;
+  background-color: #e8f5e9;
+  padding-left: 8px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.cv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cv-item {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-left: 4px solid #2196F3;
+  border-radius: 4px;
+}
+
+.cv-item h4 {
+  margin: 0 0 10px 0;
+}
+
+.cv-item p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.cv-item .preview {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+}

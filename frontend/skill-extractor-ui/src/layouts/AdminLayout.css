@@ -1,0 +1,29 @@
+/* AdminLayout Styles */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.admin-main {
+  flex: 1;
+  padding: 30px 20px;
+  overflow-y: auto;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    padding: 20px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-main {
+    padding: 15px 10px;
+  }
+}
