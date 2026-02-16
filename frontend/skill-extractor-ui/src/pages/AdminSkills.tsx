@@ -5,7 +5,7 @@ import { skillsApi, ApiError } from '../api';
 interface Skill {
   id: number;
   name: string;
-  aliases?: string;
+  aliases?: string | null;
 }
 
 const AdminSkills: React.FC = () => {

@@ -1,37 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import './EmployeeDetails.css';
-
-interface Skill {
-  id: number;
-  name: string;
-}
-
-interface CVDocument {
-  id: number;
-  createdAt: string;
-  preview: string;
-}
-
-interface EmployeeDetail {
-  id: number;
-  fullName: string;
-  email?: string;
-  createdAt: string;
-  skills: Skill[];
-  cvDocuments: CVDocument[];
-}
+import { employeesApi } from '../api';
+import type { EmployeeDetailsDto } from '../api/types';
+import SkillChips from '../components/SkillChips';
 
 const EmployeeDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [employee, setEmployee] = useState<EmployeeDetail | null>(null);
+  const navigate = useNavigate();
+
+  const [employee, setEmployee] = useState<EmployeeDetailsDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEmployee = async () => {
+      if (!id) {
+        setError('Missing employee id');
+        setLoading(false);
+        return;
+      }
+
+      const numericId = Number(id);
+      if (Number.isNaN(numericId)) {
+        setError('Invalid employee id');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const data = await (await import('../api')).employeesApi.getDetails(Number(id));
+        const data = await employeesApi.getDetails(numericId);
         setEmployee(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -43,31 +41,38 @@ const EmployeeDetails: React.FC = () => {
     fetchEmployee();
   }, [id]);
 
+  const handleDelete = async () => {
+    if (!employee) return;
+    if (!window.confirm('Delete this employee?')) return;
+
+    try {
+      await employeesApi.remove(employee.id);
+      navigate('/employees');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete employee');
+    }
+  };
+
   if (loading) return <div className="employee-details"><p>Loading...</p></div>;
   if (error) return <div className="employee-details error-message">{error}</div>;
   if (!employee) return <div className="employee-details"><p>Employee not found</p></div>;
 
   return (
     <div className="employee-details">
-      <Link to="/employees" className="back-link">← Back to Employees</Link>
-      
+      <div className="page-actions">
+        <Link to="/employees" className="back-link">← Back to Employees</Link>
+        <button className="btn btn-danger" onClick={handleDelete}>Delete employee</button>
+      </div>
+
       <div className="details-card">
         <h1>{employee.fullName}</h1>
         {employee.email && <p><strong>Email:</strong> {employee.email}</p>}
-        <p><strong>Added:</strong> {new Date(employee.createdAt).toLocaleDateString()}</p>
+        <p><strong>Added:</strong> {new Date(employee.createdAt).toLocaleString()}</p>
       </div>
 
       <div className="details-section">
         <h2>Skills ({employee.skills.length})</h2>
-        {employee.skills.length > 0 ? (
-          <ul className="skills-list">
-            {employee.skills.map((skill) => (
-              <li key={skill.id}>{skill.name}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>No skills recorded.</p>
-        )}
+        <SkillChips skills={employee.skills} />
       </div>
 
       <div className="details-section">
@@ -77,7 +82,7 @@ const EmployeeDetails: React.FC = () => {
             {employee.cvDocuments.map((doc) => (
               <div key={doc.id} className="cv-item">
                 <h4>Document #{doc.id}</h4>
-                <p><strong>Added:</strong> {new Date(doc.createdAt).toLocaleDateString()}</p>
+                <p><strong>Added:</strong> {new Date(doc.createdAt).toLocaleString()}</p>
                 <p className="preview">{doc.preview}</p>
               </div>
             ))}

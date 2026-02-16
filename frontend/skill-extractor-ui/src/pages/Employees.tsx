@@ -20,7 +20,11 @@ const Employees: React.FC = () => {
     const fetchEmployees = async () => {
       try {
         const data = await employeesApi.list();
-        setEmployees(data);
+        const transformedData = data.map(emp => ({
+          ...emp,
+          email: emp.email || undefined
+        }));
+        setEmployees(transformedData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
