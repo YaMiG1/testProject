@@ -18,7 +18,7 @@ public class SkillExtractionServiceTests
             ctx.Skills.Add(new Skill { Name = "React", Aliases = "reactjs" });
         });
 
-        var service = new SkillExtractionService(context);
+        var service = TestServiceFactory.CreateSkillExtractionServiceFromContext(context);
         var rawText = "C# .NET react";
 
         // Act
@@ -39,7 +39,7 @@ public class SkillExtractionServiceTests
             ctx.Skills.Add(new Skill { Name = ".NET", Aliases = "dotnet" });
         });
 
-        var service = new SkillExtractionService(context);
+        var service = TestServiceFactory.CreateSkillExtractionServiceFromContext(context);
         var rawText = "csharp dotnet";
 
         // Act
@@ -59,7 +59,7 @@ public class SkillExtractionServiceTests
             ctx.Skills.Add(new Skill { Name = "C#", Aliases = "csharp" });
         });
 
-        var service = new SkillExtractionService(context);
+        var service = TestServiceFactory.CreateSkillExtractionServiceFromContext(context);
 
         // Act - empty string
         var resultEmpty = await service.ExtractSkillsAsync(string.Empty, CancellationToken.None);
@@ -81,7 +81,7 @@ public class SkillExtractionServiceTests
             ctx.Skills.Add(new Skill { Name = "C#", Aliases = "csharp" });
         });
 
-        var service = new SkillExtractionService(context);
+        var service = TestServiceFactory.CreateSkillExtractionServiceFromContext(context);
         var rawText = "Java Python Ruby";
 
         // Act
@@ -101,7 +101,7 @@ public class SkillExtractionServiceTests
             ctx.Skills.Add(new Skill { Name = "ASP.NET Core", Aliases = null });
         });
 
-        var service = new SkillExtractionService(context);
+        var service = TestServiceFactory.CreateSkillExtractionServiceFromContext(context);
         // "net" and "aspnet core" without dots
         var rawText = "net aspnet core";
 
@@ -122,7 +122,7 @@ public class SkillExtractionServiceTests
             ctx.Skills.Add(new Skill { Name = "JavaScript", Aliases = "JS,JS,JavaScript ES6" });
         });
 
-        var service = new SkillExtractionService(context);
+        var service = TestServiceFactory.CreateSkillExtractionServiceFromContext(context);
         var rawText = "js es6";
 
         // Act
@@ -142,7 +142,7 @@ public class SkillExtractionServiceTests
             ctx.Skills.Add(new Skill { Name = "C#", Aliases = null });
         });
 
-        var service = new SkillExtractionService(context);
+        var service = TestServiceFactory.CreateSkillExtractionServiceFromContext(context);
         var rawText = "C# C# C#";
 
         // Act

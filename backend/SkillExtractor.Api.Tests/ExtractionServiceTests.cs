@@ -33,7 +33,7 @@ public class ExtractionServiceTests
             .Setup(x => x.ExtractSkillsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(skills);
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto 
         { 
             FullName = "John Doe",
@@ -84,7 +84,7 @@ public class ExtractionServiceTests
             .Setup(x => x.ExtractSkillsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(skills);
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = "Jane Doe",
@@ -117,7 +117,7 @@ public class ExtractionServiceTests
             .Setup(x => x.ExtractSkillsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(skills);
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = "Bob Smith",
@@ -146,7 +146,7 @@ public class ExtractionServiceTests
             .Setup(x => x.ExtractSkillsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Skill>());
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = "Alice",
@@ -174,7 +174,7 @@ public class ExtractionServiceTests
             .Setup(x => x.ExtractSkillsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Skill>());
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = "  John Doe  ",
@@ -199,7 +199,7 @@ public class ExtractionServiceTests
         var context = TestDbFactory.CreateSqliteDbContext();
         var mockSkillExtractor = new Mock<ISkillExtractionService>();
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = null!,
@@ -223,7 +223,7 @@ public class ExtractionServiceTests
         var context = TestDbFactory.CreateSqliteDbContext();
         var mockSkillExtractor = new Mock<ISkillExtractionService>();
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = "John Doe",
@@ -247,7 +247,7 @@ public class ExtractionServiceTests
         var context = TestDbFactory.CreateSqliteDbContext();
         var mockSkillExtractor = new Mock<ISkillExtractionService>();
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
 
         // Act
         var (ok, result, error) = await service.ExtractAndSaveAsync(null!, CancellationToken.None);
@@ -269,7 +269,7 @@ public class ExtractionServiceTests
             .Setup(x => x.ExtractSkillsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Skill>());
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = "Bob",
@@ -299,7 +299,7 @@ public class ExtractionServiceTests
             .Setup(x => x.ExtractSkillsAsync(rawText, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Skill>());
 
-        var service = new ExtractionService(context, mockSkillExtractor.Object);
+        var service = TestServiceFactory.CreateExtractionService(context, mockSkillExtractor.Object);
         var dto = new ExtractRequestDto
         {
             FullName = "Charlie",

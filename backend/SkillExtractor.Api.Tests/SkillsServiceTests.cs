@@ -13,7 +13,7 @@ public class SkillsServiceTests
     {
         // Arrange
         var context = TestDbFactory.CreateDbContext();
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
         var dto = new CreateSkillDto { Name = "C#", Aliases = "csharp" };
 
         // Act
@@ -32,7 +32,7 @@ public class SkillsServiceTests
     {
         // Arrange
         var context = TestDbFactory.CreateDbContext();
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
         var dto = new CreateSkillDto { Name = "  C#  ", Aliases = "  csharp  " };
 
         // Act
@@ -53,7 +53,7 @@ public class SkillsServiceTests
             ctx.Skills.Add(new Skill { Name = "C#", Aliases = null });
         });
 
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
         var dto = new CreateSkillDto { Name = "c#", Aliases = null };
 
         // Act
@@ -70,7 +70,7 @@ public class SkillsServiceTests
     {
         // Arrange
         var context = TestDbFactory.CreateDbContext();
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
 
         // Act - null name
         var (ok1, result1, error1) = await service.CreateAsync(
@@ -101,7 +101,7 @@ public class SkillsServiceTests
     {
         // Arrange
         var context = TestDbFactory.CreateDbContext();
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
 
         // Act
         var (ok, result, error) = await service.CreateAsync(null!, CancellationToken.None);
@@ -120,7 +120,7 @@ public class SkillsServiceTests
             ctx.Skills.Add(new Skill { Name = "C#", Aliases = "csharp" });
         });
 
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
         var skillId = context.Skills.First().Id;
         var dto = new UpdateSkillDto { Name = "C# Advanced", Aliases = "csharp,cs" };
 
@@ -145,7 +145,7 @@ public class SkillsServiceTests
             ctx.Skills.Add(new Skill { Name = "JavaScript", Aliases = null });
         });
 
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
         var jsSkill = context.Skills.First(s => s.Name == "JavaScript");
 
         // Act - try to update JavaScript to C#
@@ -165,7 +165,7 @@ public class SkillsServiceTests
     {
         // Arrange
         var context = TestDbFactory.CreateDbContext();
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
 
         // Act
         var (ok, result, error, notFound) = await service.UpdateAsync(
@@ -188,7 +188,7 @@ public class SkillsServiceTests
             ctx.Skills.Add(new Skill { Name = "C#", Aliases = null });
         });
 
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
         var skillId = context.Skills.First().Id;
 
         // Act
@@ -205,7 +205,7 @@ public class SkillsServiceTests
     {
         // Arrange
         var context = TestDbFactory.CreateDbContext();
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
 
         // Act
         var (ok, notFound) = await service.DeleteAsync(999, CancellationToken.None);
@@ -226,7 +226,7 @@ public class SkillsServiceTests
             ctx.Skills.Add(new Skill { Name = "Banana", Aliases = null });
         });
 
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
 
         // Act
         var result = await service.GetAllAsync(CancellationToken.None);
@@ -241,7 +241,7 @@ public class SkillsServiceTests
     {
         // Arrange
         var context = TestDbFactory.CreateDbContext();
-        var service = new SkillsService(context);
+        var service = TestServiceFactory.CreateSkillsServiceFromContext(context);
 
         // Act
         var result = await service.GetAllAsync(CancellationToken.None);
