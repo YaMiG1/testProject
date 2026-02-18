@@ -62,6 +62,16 @@ Microsoft SQL Server
 
 Docker & Docker Compose
 
+### AI Tools
+
+## GitHub Copilot (VS Code)
+
+- Copilot Chat: used to generate the initial architecture plan, create files (entities, DbContext, services, controllers, React pages/layouts), and propose fixes/refactors based on compile/runtime errors.
+
+### External Tools
+
+- ChatGPT: used as a planning assistant to draft prompts and debug errors, while the code itself was generated mainly in Copilot.
+
 ### All key prompts
 
 ## We are building a small "Skill Extraction Tool (Lite)".
@@ -512,3 +522,11 @@ A concise explanation of the root cause (why ok was false)
 The updated ExtractionServiceTests.cs (full file)
 If you change test DB provider for these tests, output the helper changes too.
 Do not change production code unless absolutely necessary.
+
+### Recommendations
+
+Keep prompts small and focused (one feature at a time).
+
+Always request paths + full code output to avoid partial snippets.
+After each AI-generated step:
+run build/tests immediately,fix issues while context is fresh, and commit frequently with meaningful messages.
