@@ -1,6 +1,6 @@
-### Skill Extraction Tool
+## Skill Extraction Tool
 
-## Overview of the App
+### Overview of the App
 
 Skill Extraction Tool is a full-stack web application that extracts skills from a new employee’s CV and IFU content and stores them in a structured format for further processing and review.
 
@@ -10,7 +10,7 @@ The application is designed to help HR specialists or managers quickly register 
 
 The system consists of a React-based frontend and a .NET Web API backend with Microsoft SQL Server. The backend processes CV and IFU text, matches skills using a skills dictionary, and stores structured employee profiles.
 
-## Main Features
+### Main Features
 
 Paste CV and IFU text content into the application.
 
@@ -28,7 +28,7 @@ Multi-page UI with routing and multiple layouts.
 
 Dockerized deployment for easy project startup.
 
-## Application Flow
+### Application Flow
 
 A user pastes CV and IFU text into the application.
 
@@ -40,9 +40,9 @@ Users can browse employee profiles and view extracted skills and document previe
 
 Administrators can manage and extend the skills dictionary.
 
-## Technology Stack
+### Technology Stack
 
-# Frontend:
+### Frontend:
 
 React + TypeScript
 
@@ -50,7 +50,7 @@ Vite
 
 React Router
 
-# Backend:
+### Backend:
 
 ASP.NET Core Web API
 
@@ -58,23 +58,23 @@ Entity Framework Core
 
 Microsoft SQL Server
 
-# Deployment:
+### Deployment:
 
 Docker & Docker Compose
 
-### AI Tools
+## AI Tools
 
-## GitHub Copilot (VS Code)
+### GitHub Copilot (VS Code)
 
 - Copilot Chat: used to generate the initial architecture plan, create files (entities, DbContext, services, controllers, React pages/layouts), and propose fixes/refactors based on compile/runtime errors.
 
-### External Tools
+## External Tools
 
 - ChatGPT: used as a planning assistant to draft prompts and debug errors, while the code itself was generated mainly in Copilot.
 
-### All key prompts
+## All key prompts
 
-## We are building a small "Skill Extraction Tool (Lite)".
+#### We are building a small "Skill Extraction Tool (Lite)".
 
 Tech: ASP.NET Core Web API (.NET 10) + EF Core + MS SQL Server.
 Frontend: React + TypeScript + Vite.
@@ -93,7 +93,7 @@ Please propose:
 3. Folder structure for backend
    Return as a concise plan.
 
-## We already have an ASP.NET Core Web API project (.NET 10) in backend/SkillExtractor.Api.
+#### We already have an ASP.NET Core Web API project (.NET 10) in backend/SkillExtractor.Api.
 
 Please generate EF Core entities and DbContext for a simplified Skill Extraction Tool.
 
@@ -139,7 +139,7 @@ Output:
 
 - The full code for each new file and its intended path.
 
-## Update backend/SkillExtractor.Api/Program.cs for .NET 10:
+#### Update backend/SkillExtractor.Api/Program.cs for .NET 10:
 
 - Register AppDbContext (SkillExtractor.Api.Data.AppDbContext) using SQL Server and connection string "DefaultConnection"
 - Add Swagger and enable it only in Development
@@ -147,13 +147,13 @@ Output:
 - Map controllers
 - Keep default HTTPS
 
-## Create a DataSeeder service that ensures database is created/migrated and seeds Skills table
+#### Create a DataSeeder service that ensures database is created/migrated and seeds Skills table
 
 with a small default set (e.g. C#, .NET, SQL, React, TypeScript, Docker, Azure).
 Call it from Program.cs at startup in Development.
 Provide code for DataSeeder and the startup hook
 
-## Create DTOs in backend/SkillExtractor.Api/DTOs:
+#### Create DTOs in backend/SkillExtractor.Api/DTOs:
 
 SkillDto: int Id, string Name, string? Aliases
 
@@ -175,7 +175,7 @@ ExtractResponseDto: int EmployeeId, List<SkillDto> ExtractedSkills
 Also create a simple static mapping helper class DTOs/Mapping.cs with methods to map Skill -> SkillDto and CVDocument -> CvDocumentDto.
 Output full code per file with intended paths.
 
-## Implement Services/SkillExtractionService.cs for backend/SkillExtractor.Api.
+#### Implement Services/SkillExtractionService.cs for backend/SkillExtractor.Api.
 
 Requirements:
 
@@ -198,7 +198,7 @@ Return distinct matched skills by Id.
 Keep it simple and readable.
 Output full code.
 
-## Create Services/IEmployeesService.cs and Services/EmployeesService.cs and refactor EmployeesController to use it.
+#### Create Services/IEmployeesService.cs and Services/EmployeesService.cs and refactor EmployeesController to use it.
 
 EmployeesService requirements:
 
@@ -222,7 +222,7 @@ builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 
 Output full code for new/changed files.
 
-## Create Services/IExtractionService.cs and Services/ExtractionService.cs and refactor ExtractionController to use it.
+#### Create Services/IExtractionService.cs and Services/ExtractionService.cs and refactor ExtractionController to use it.
 
 Requirements:
 
@@ -249,7 +249,7 @@ builder.Services.AddScoped<IExtractionService, ExtractionService>();
 
 Output full code
 
-## Refactor SkillsController to move ALL database access logic into a service layer.
+#### Refactor SkillsController to move ALL database access logic into a service layer.
 
 Current state:
 SkillsController directly uses AppDbContext to query and modify Skills.
@@ -310,7 +310,7 @@ Full code for SkillsService
 Updated SkillsController
 Program.cs registration snippet only
 
-## Refactor the project to introduce an interface for SkillExtractionService.
+#### Refactor the project to introduce an interface for SkillExtractionService.
 
 Current state:
 SkillExtractionService is used directly without an interface.
@@ -354,7 +354,7 @@ Updated SkillExtractionService.cs
 Any updated constructors/usings
 Program.cs registration snippet only.
 
-## Create a React Router structure for a Vite React + TypeScript app.
+#### Create a React Router structure for a Vite React + TypeScript app.
 
 Requirements:
 
@@ -386,7 +386,7 @@ Create/Update files under src/:
 
 Output full code per file with correct paths.
 
-## Current issue:
+#### Current issue:
 
 - Content is stuck to the left
 - Navbar does not stretch across the whole page
@@ -422,7 +422,7 @@ Output:
 - Any required CSS changes (src/index.css or src/App.css)
   Explain briefly what changed.
 
-## Add automated tests for the backend of Skill Extraction Tool.
+#### Add automated tests for the backend of Skill Extraction Tool.
 
 Project details:
 
@@ -485,7 +485,7 @@ TestDbFactory code
 Full test class code
 How to run tests (dotnet test).
 
-## My backend tests compile but 7 tests in ExtractionServiceTests fail because ok is false.
+#### My backend tests compile but 7 tests in ExtractionServiceTests fail because ok is false.
 
 Please fix ONLY the tests to match the current implementation of IExtractionService/ExtractionService.
 
@@ -523,7 +523,7 @@ The updated ExtractionServiceTests.cs (full file)
 If you change test DB provider for these tests, output the helper changes too.
 Do not change production code unless absolutely necessary.
 
-### Recommendations
+## Recommendations
 
 Keep prompts small and focused (one feature at a time).
 
