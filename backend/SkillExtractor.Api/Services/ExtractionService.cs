@@ -10,22 +10,41 @@ using SkillExtractor.Api.Models;
 
 namespace SkillExtractor.Api.Services
 {
+    /// <summary>
+    /// Orchestrates the end-to-end extraction workflow (SRP: thin orchestrator).
+    /// Delegates to repositories and service abstractions; keeps behavior unchanged.
+    /// </summary>
     public class ExtractionService : IExtractionService
     {
         private readonly AppDbContext _db;
         private readonly ISkillExtractionService _skillExtractor;
+        private readonly IExtractionValidator _validator;
+        private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<CVDocument> _cvDocumentRepository;
+        private readonly IRepository<EmployeeSkill> _employeeSkillRepository;
 
-        public ExtractionService(AppDbContext db, ISkillExtractionService skillExtractor)
+        public ExtractionService(
+            AppDbContext db,
+            ISkillExtractionService skillExtractor,
+            IExtractionValidator validator,
+            IRepository<Employee> employeeRepository,
+            IRepository<CVDocument> cvDocumentRepository,
+            IRepository<EmployeeSkill> employeeSkillRepository)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
             _skillExtractor = skillExtractor ?? throw new ArgumentNullException(nameof(skillExtractor));
+            _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
+            _cvDocumentRepository = cvDocumentRepository ?? throw new ArgumentNullException(nameof(cvDocumentRepository));
+            _employeeSkillRepository = employeeSkillRepository ?? throw new ArgumentNullException(nameof(employeeSkillRepository));
         }
 
         public async Task<(bool ok, ExtractResponseDto? result, string? error)> ExtractAndSaveAsync(ExtractRequestDto dto, CancellationToken ct)
         {
-            // Validate inputs
-            if (dto == null || string.IsNullOrWhiteSpace(dto.FullName) || string.IsNullOrWhiteSpace(dto.RawText))
-                return (false, null, "validation");
+            // Validate inputs (SRP: validation delegated to validator)
+            var validationError = _validator.Validate(dto);
+            if (validationError != null)
+                return (false, null, validationError);
 
             try
             {
@@ -34,23 +53,15 @@ namespace SkillExtractor.Api.Services
 
                 try
                 {
-                    // Create Employee
-                    var employee = new Employee
-                    {
-                        FullName = dto.FullName.Trim(),
-                        Email = string.IsNullOrWhiteSpace(dto.Email) ? null : dto.Email.Trim()
-                    };
-                    _db.Employees.Add(employee);
-                    await _db.SaveChangesAsync(ct);
+                    // Create Employee (SRP: entity creation via repositories)
+                    var employee = CreateEmployee(dto);
+                    _employeeRepository.Add(employee);
+                    await _employeeRepository.SaveChangesAsync(ct);
 
                     // Create CVDocument
-                    var cvDoc = new CVDocument
-                    {
-                        EmployeeId = employee.Id,
-                        RawText = dto.RawText
-                    };
-                    _db.CVDocuments.Add(cvDoc);
-                    await _db.SaveChangesAsync(ct);
+                    var cvDoc = CreateCvDocument(employee.Id, dto.RawText);
+                    _cvDocumentRepository.Add(cvDoc);
+                    await _cvDocumentRepository.SaveChangesAsync(ct);
 
                     // Extract skills using SkillExtractionService
                     var matchedSkills = await _skillExtractor.ExtractSkillsAsync(dto.RawText, ct);
@@ -59,14 +70,10 @@ namespace SkillExtractor.Api.Services
                     var distinctSkillIds = matchedSkills.Select(s => s.Id).Distinct().ToList();
                     foreach (var skillId in distinctSkillIds)
                     {
-                        var employeeSkill = new EmployeeSkill
-                        {
-                            EmployeeId = employee.Id,
-                            SkillId = skillId
-                        };
-                        _db.EmployeeSkills.Add(employeeSkill);
+                        var employeeSkill = CreateEmployeeSkill(employee.Id, skillId);
+                        _employeeSkillRepository.Add(employeeSkill);
                     }
-                    await _db.SaveChangesAsync(ct);
+                    await _employeeSkillRepository.SaveChangesAsync(ct);
 
                     // Commit transaction
                     await transaction.CommitAsync(ct);
@@ -90,6 +97,42 @@ namespace SkillExtractor.Api.Services
             {
                 return (false, null, ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Factory method for creating an Employee entity (OCP: extraction of entity creation).
+        /// </summary>
+        private static Employee CreateEmployee(ExtractRequestDto dto)
+        {
+            return new Employee
+            {
+                FullName = dto.FullName.Trim(),
+                Email = string.IsNullOrWhiteSpace(dto.Email) ? null : dto.Email.Trim()
+            };
+        }
+
+        /// <summary>
+        /// Factory method for creating a CVDocument entity.
+        /// </summary>
+        private static CVDocument CreateCvDocument(int employeeId, string rawText)
+        {
+            return new CVDocument
+            {
+                EmployeeId = employeeId,
+                RawText = rawText
+            };
+        }
+
+        /// <summary>
+        /// Factory method for creating an EmployeeSkill entity.
+        /// </summary>
+        private static EmployeeSkill CreateEmployeeSkill(int employeeId, int skillId)
+        {
+            return new EmployeeSkill
+            {
+                EmployeeId = employeeId,
+                SkillId = skillId
+            };
         }
     }
 }

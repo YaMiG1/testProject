@@ -9,18 +9,21 @@ using SkillExtractor.Api.DTOs;
 
 namespace SkillExtractor.Api.Services
 {
+    /// <summary>
+    /// Provides query operations for employees (SRP: delegates to repository for data access).
+    /// </summary>
     public class EmployeesService : IEmployeesService
     {
-        private readonly AppDbContext _db;
+        private readonly IRepository<Models.Employee> _employeeRepository;
 
-        public EmployeesService(AppDbContext db)
+        public EmployeesService(IRepository<Models.Employee> employeeRepository)
         {
-            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
         }
 
         public async Task<List<EmployeeListItemDto>> GetAllAsync(CancellationToken ct)
         {
-            return await _db.Employees
+            return await _employeeRepository.Query()
                 .OrderBy(e => e.FullName)
                 .Select(e => new EmployeeListItemDto
                 {
@@ -35,7 +38,7 @@ namespace SkillExtractor.Api.Services
 
         public async Task<EmployeeDetailsDto?> GetByIdAsync(int id, CancellationToken ct)
         {
-            var emp = await _db.Employees
+            var emp = await _employeeRepository.Query()
                 .Where(e => e.Id == id)
                 .Select(e => new
                 {
@@ -70,11 +73,11 @@ namespace SkillExtractor.Api.Services
 
         public async Task<bool> DeleteAsync(int id, CancellationToken ct)
         {
-            var emp = await _db.Employees.FindAsync(new object[] { id }, ct);
+            var emp = await _employeeRepository.GetByIdAsync(id, ct);
             if (emp == null) return false;
 
-            _db.Employees.Remove(emp);
-            await _db.SaveChangesAsync(ct);
+            _employeeRepository.Remove(emp);
+            await _employeeRepository.SaveChangesAsync(ct);
             return true;
         }
     }

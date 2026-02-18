@@ -1,11 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using SkillExtractor.Api.Data;
+using SkillExtractor.Api.Models;
 using SkillExtractor.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Register repository abstraction (DIP: depend on IRepository<T> instead of DbContext)
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+
+// Register validators (SRP: validation logic extracted into dedicated classes)
+builder.Services.AddScoped<ISkillValidator, SkillValidator>();
+builder.Services.AddScoped<IExtractionValidator, ExtractionValidator>();
+
+// Register skill matching abstraction (SRP: text matching separated from data access)
+builder.Services.AddScoped<ISkillMatcher, TokenBasedSkillMatcher>();
 
 // Register application services
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();

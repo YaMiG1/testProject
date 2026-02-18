@@ -12,11 +12,14 @@ namespace SkillExtractor.Api.Services
 {
     public class SkillExtractionService : ISkillExtractionService
     {
-        private readonly AppDbContext _db;
+        private readonly IRepository<Skill> _skillRepository;
+        private readonly ISkillMatcher _skillMatcher;
+        private readonly Regex _splitter = new Regex("[^A-Za-z0-9#\\.\\+]+", RegexOptions.Compiled);
 
-        public SkillExtractionService(AppDbContext db)
+        public SkillExtractionService(IRepository<Skill> skillRepository, ISkillMatcher skillMatcher)
         {
-            _db = db ?? throw new ArgumentNullException(nameof(db));
+            _skillRepository = skillRepository ?? throw new ArgumentNullException(nameof(skillRepository));
+            _skillMatcher = skillMatcher ?? throw new ArgumentNullException(nameof(skillMatcher));
         }
 
         public async Task<List<Skill>> ExtractSkillsAsync(string rawText, CancellationToken ct)
@@ -24,23 +27,21 @@ namespace SkillExtractor.Api.Services
             if (string.IsNullOrWhiteSpace(rawText))
                 return new List<Skill>();
 
-            // Load skills from DB (Id, Name, Aliases)
-            var skills = await _db.Skills
+            // Load skills from repository
+            var skills = await _skillRepository.Query()
                 .Select(s => new Skill { Id = s.Id, Name = s.Name, Aliases = s.Aliases })
                 .ToListAsync(ct);
 
-            // Build token sets from rawText
-            // Keep letters, digits, '#' '.' '+' as part of tokens; split on anything else
-            var splitter = new Regex("[^A-Za-z0-9#\\.\\+]+", RegexOptions.Compiled);
+            if (skills.Count == 0)
+                return new List<Skill>();
 
+            // Build token sets from rawText
             var lowered = rawText.ToLowerInvariant();
-            var rawTokens = splitter.Split(lowered)
+            var rawTokens = _splitter.Split(lowered)
                 .Where(t => !string.IsNullOrWhiteSpace(t))
                 .Distinct();
 
             var tokenSet = new HashSet<string>(rawTokens);
-
-            // Secondary set: tokens with dots removed (e.g. ".net" -> "net")
             var tokenSetNoDots = new HashSet<string>(rawTokens.Select(t => t.Replace(".", string.Empty)));
 
             var matched = new Dictionary<int, Skill>();
@@ -48,63 +49,37 @@ namespace SkillExtractor.Api.Services
             foreach (var skill in skills)
             {
                 // Build candidate terms: Name + Aliases (aliases split by comma)
-                var candidates = new List<string>();
-                if (!string.IsNullOrWhiteSpace(skill.Name))
-                    candidates.Add(skill.Name);
+                var candidates = BuildCandidates(skill.Name, skill.Aliases);
 
-                if (!string.IsNullOrWhiteSpace(skill.Aliases))
+                // Delegate matching logic to matcher (SRP: separation of text matching from data access)
+                if (_skillMatcher.IsMatch(candidates, tokenSet, tokenSetNoDots))
                 {
-                    var parts = skill.Aliases.Split(',');
-                    foreach (var p in parts)
-                    {
-                        if (!string.IsNullOrWhiteSpace(p))
-                            candidates.Add(p);
-                    }
-                }
-
-                var isMatch = false;
-
-                foreach (var cand in candidates)
-                {
-                    var normalized = cand.ToLowerInvariant().Trim();
-                    if (string.IsNullOrEmpty(normalized))
-                        continue;
-
-                    // Direct match: the whole candidate appears as a token
-                    if (tokenSet.Contains(normalized))
-                    {
-                        isMatch = true;
-                        break;
-                    }
-
-                    // Candidate without dots
-                    var withoutDots = normalized.Replace(".", string.Empty);
-                    if (tokenSetNoDots.Contains(withoutDots))
-                    {
-                        isMatch = true;
-                        break;
-                    }
-
-                    // Also check candidate split into tokens (e.g. "asp.net core" -> "asp.net", "core")
-                    var candTokens = splitter.Split(normalized).Where(t => !string.IsNullOrWhiteSpace(t));
-                    foreach (var ctok in candTokens)
-                    {
-                        if (tokenSet.Contains(ctok) || tokenSetNoDots.Contains(ctok.Replace(".", string.Empty)))
-                        {
-                            isMatch = true;
-                            break;
-                        }
-                    }
-
-                    if (isMatch)
-                        break;
-                }
-
-                if (isMatch && !matched.ContainsKey(skill.Id))
                     matched[skill.Id] = skill;
+                }
             }
 
             return matched.Values.ToList();
         }
+
+        private static List<string> BuildCandidates(string? name, string? aliases)
+        {
+            var candidates = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(name))
+                candidates.Add(name);
+
+            if (!string.IsNullOrWhiteSpace(aliases))
+            {
+                var parts = aliases.Split(',');
+                foreach (var p in parts)
+                {
+                    if (!string.IsNullOrWhiteSpace(p))
+                        candidates.Add(p);
+                }
+            }
+
+            return candidates;
+        }
     }
 }
+
