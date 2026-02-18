@@ -40,9 +40,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors("DevCors");
+}
 
-    // Run EF migrations and seed default data in Development
-    DataSeeder.SeedAsync(app.Services, app.Environment).GetAwaiter().GetResult();
+// Always run migrations and seed data (on startup in docker-compose)
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+
+        DataSeeder.SeedAsync(scope.ServiceProvider, app.Environment)
+                  .GetAwaiter()
+                  .GetResult();
+    }
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while migrating or seeding the database.");
 }
 
 app.UseHttpsRedirection();

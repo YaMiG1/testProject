@@ -19,7 +19,16 @@ export class ApiError extends Error {
 }
 
 const getBaseUrl = (): string => {
-  const raw = import.meta.env.VITE_API_URL || 'http://localhost:5075';
+  // Try to use runtime config loaded from /config.js (docker-compose)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const config = (window as any).__APP_CONFIG__;
+  if (config?.API_URL) {
+    const raw = config.API_URL;
+    return raw.replace(/\/+$|\/+$/g, '').replace(/\/$/, '');
+  }
+
+  // Fallback to build-time env var
+  const raw = import.meta.env.VITE_API_URL || 'http://localhost:5004';
   // remove trailing slashes
   return raw.replace(/\/+$|\/+$/g, '').replace(/\/$/, '');
 };

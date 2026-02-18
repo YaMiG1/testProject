@@ -1,0 +1,176 @@
+﻿# =============================================================================
+# SkillExtractor .gitignore
+# =============================================================================
+# This file excludes build artifacts, dependencies, temporary files, and
+# environment-specific configurations from version control for a .NET/React
+# project with Docker and SQL Server.
+# =============================================================================
+
+# =============================================================================
+# .NET / ASP.NET Core
+# =============================================================================
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Rider
+.idea/
+*.sln.iml
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# Visual Studio cache
+*.cache
+*.cache.json
+
+# =============================================================================
+# Node.js / React / Vite / TypeScript / Frontend
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+out/
+
+# Vite
+.vite/
+
+# ESLint
+.eslintcache
+
+# TypeScript
+*.tsbuildinfo
+.tsc_output/
+
+# =============================================================================
+# IDEs & Editors
+# =============================================================================
+# VS Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# =============================================================================
+# OS-specific files
+# =============================================================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+.directory
+
+# =============================================================================
+# Docker & Docker Compose
+# =============================================================================
+docker-compose.override.yml
+.docker/
+
+# =============================================================================
+# Temporary & Log Files
+# =============================================================================
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.orig
+
+# Application logs
+logs/
+Logs/
+
+# Runtime/execution
+*.pid
+
+# =============================================================================
+# Database
+# =============================================================================
+# SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# =============================================================================
+# Build & Package Artifacts
+# =============================================================================
+publish/
+PublishProfiles/
+*.war
+*.ear
+
+# =============================================================================
+# Coverage & Testing
+# =============================================================================
+coverage/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# =============================================================================
+# IDE-generated files (not already covered)
+# =============================================================================
+*.bak
+
+# =============================================================================
+# Project-specific ignores
+# =============================================================================
+# Add any project-specific patterns below as needed

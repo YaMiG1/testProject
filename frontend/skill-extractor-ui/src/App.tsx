@@ -1,12 +1,11 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
-import AdminLayout from './layouts/AdminLayout';
+import AdminLayout from './layouts/AdminLayout.tsx';
 import Home from './pages/Home';
-import NewCV from './pages/NewCV';
-import Employees from './pages/Employees';
-import EmployeeDetails from './pages/EmployeeDetails';
-import AdminSkills from './pages/AdminSkills';
+import NewCV from './pages/NewCV.tsx';
+import Employees from './pages/Employees.tsx';
+import EmployeeDetails from './pages/EmployeeDetails.tsx';
+import AdminSkills from './pages/AdminSkills.tsx';
 
 function App() {
   return (

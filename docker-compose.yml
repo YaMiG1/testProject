@@ -1,12 +1,50 @@
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: skillextractor_sqlserver
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=StrongPass123!
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
+      MSSQL_PID: "Developer"
     ports:
-      - "1433:1433"
+      - "${DB_PORT:-1433}:1433"
     volumes:
-      - sql_data:/var/opt/mssql
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - skillextractor
+
+  api:
+    build:
+      context: ./backend/SkillExtractor.Api
+    container_name: skillextractor_api
+    depends_on:
+      - sqlserver
+    environment:
+      ASPNETCORE_URLS: "http://+:5000"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=${DB_NAME};User Id=${DB_USER};Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+    ports:
+      - "${API_PORT:-5004}:5000"
+    restart: on-failure
+    networks:
+      - skillextractor
+
+  ui:
+    build:
+      context: ./frontend/skill-extractor-ui
+    container_name: skillextractor_ui
+    depends_on:
+      - api
+    environment:
+      API_URL: "http://localhost:${API_PORT:-5004}"
+    ports:
+      - "${UI_PORT:-5173}:80"
+    restart: on-failure
+    networks:
+      - skillextractor
+
 volumes:
-  sql_data:
+  sqlserver_data:
+
+networks:
+  skillextractor:

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using SkillExtractor.Api.Models;
 
 namespace SkillExtractor.Api.Data;
