@@ -62,6 +62,11 @@ Microsoft SQL Server
 
 Docker & Docker Compose
 
+## How to run
+
+Using Docker Compose:
+docker compose up --build
+
 ## AI Tools
 
 ### GitHub Copilot (VS Code)
